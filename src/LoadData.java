@@ -64,13 +64,14 @@ public class LoadData {
         return slots;
     }
 
-    public static HashMap<String, Integer> loadTags() throws SQLException{
-        HashMap<String, Integer> tags = new HashMap<String, Integer>();
+    public static ArrayList<Tag> loadTags() throws SQLException{
+        ArrayList<Tag> tags = new ArrayList<Tag>();
 
         Statement stmt = Main.getConn().createStatement();
         ResultSet result = stmt.executeQuery("SELECT * FROM Tags");
         while(result.next()){
-            tags.put(result.getString("TagName"), result.getInt("TagWeight"));
+            Tag tag = new Tag(result.getString("TagName"), result.getInt("TagWeight"), result.getInt("TagID"));
+            tags.add(tag);
         }
         return tags;
     }

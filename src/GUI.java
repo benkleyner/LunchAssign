@@ -46,7 +46,7 @@ public class GUI extends JFrame{
     private ArrayList<Location> locations = LoadData.loadLocations();
     private ArrayList<TimeSlot> timeSlots = LoadData.loadTimeSlots();
 
-    private HashMap<String, Integer> tags = LoadData.loadTags();
+    private ArrayList<Tag> tags = LoadData.loadTags();
 
 
 
@@ -257,7 +257,7 @@ public class GUI extends JFrame{
                 if(tagList.getSelectedRow() != -1){
                     try {
                         Statement stmt = Main.getConn().createStatement();
-                        stmt.executeUpdate("DELETE FROM Tags WHERE TagName = \"" + tagList.getValueAt(tagList.getSelectedRow(), 0) + "\";");
+                        stmt.executeUpdate("DELETE FROM Tags WHERE TagID=" + tags.get(tagList.getSelectedRow()).getID() + ";");
                         stmt.executeUpdate("ALTER TABLE Teachers DROP COLUMN " + tagList.getValueAt(tagList.getSelectedRow(), 0) + ";");
                         stmt.executeUpdate("ALTER TABLE Locations DROP COLUMN " + tagList.getValueAt(tagList.getSelectedRow(), 0) + ";");
                         updateSQL();
@@ -281,7 +281,7 @@ public class GUI extends JFrame{
                                 Statement stmt = Main.getConn().createStatement();
                                 stmt.executeUpdate("ALTER TABLE Teachers RENAME COLUMN " + tagList.getValueAt(tagList.getSelectedRow(), 0) + " to " + addTagPopup.getTagName() + ";");
                                 stmt.executeUpdate("ALTER TABLE Locations RENAME COLUMN " + tagList.getValueAt(tagList.getSelectedRow(), 0) + " to " + addTagPopup.getTagName() + ";");
-                                stmt.executeUpdate("UPDATE Tags SET TagName=\"" + addTagPopup.getTagName() + "\" , TagWeight=" + addTagPopup.getWeight() + " WHERE TagName=\"" + tagList.getValueAt(tagList.getSelectedRow(), 0) + "\";");
+                                stmt.executeUpdate("UPDATE Tags SET TagName=\"" + addTagPopup.getTagName() + "\" , TagWeight=" + addTagPopup.getWeight() + " WHERE TagID=" + tags.get(tagList.getSelectedRow()).getID() + ";");
                                 updateSQL();
                                 initTables();
                             } catch (SQLException ex) {
@@ -434,9 +434,9 @@ public class GUI extends JFrame{
 
         Object[][] tagData = new Object[tags.size()][2];
         int i = 0;
-        for(Map.Entry<String, Integer> entry: tags.entrySet()){
-            tagData[i][0] = entry.getKey();
-            tagData[i][1] = entry.getValue();
+        for(Tag tag : tags){
+            tagData[i][0] = tag.getName();
+            tagData[i][1] = tag.getWeight();
             i++;
         }
         tagList.setModel(new DefaultTableModel(tagData, new Object[]{"Tag", "Weight"}));
@@ -478,7 +478,7 @@ public class GUI extends JFrame{
             for(Map.Entry<String, Boolean> entry : teacher.getReqs().entrySet()){
                 SQL += ", " + entry.getKey() + "=" + (entry.getValue() ? 1 : 0) + " ";
             }
-            SQL += "WHERE TeacherName=\"" + teacher.getName() + "\";";
+            SQL += "WHERE TeacherID=" + teacher.getID() + ";";
             stmt.executeUpdate(SQL);
         }
     }
@@ -505,7 +505,7 @@ public class GUI extends JFrame{
                 }
                 i++;
             }
-            SQL += " WHERE LocationName=\"" + location.getName() + "\";";
+            SQL += " WHERE LocationID=" + location.getID() + ";";
             stmt.executeUpdate(SQL);
         }
     }
