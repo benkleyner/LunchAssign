@@ -8,6 +8,8 @@ public class Faculty{
     private HashMap<String, Boolean> reqs;
 
     private int ID;
+
+    private int timesSelected;
     /** Creates an instance of Faculty with default values */
     public Faculty(){
         this.name = "";
@@ -37,6 +39,7 @@ public class Faculty{
         this.isAdmin = isAdmin;
         this.reqs = reqs;
         this.ID = ID;
+        this.timesSelected = 0;
     }
 
     /**
@@ -79,6 +82,10 @@ public class Faculty{
         return ID;
     }
 
+    public int getTimesSelected() {
+        return timesSelected;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -103,6 +110,10 @@ public class Faculty{
         this.ID = ID;
     }
 
+    public void setTimesSelected(int timesSelected) {
+        this.timesSelected = timesSelected;
+    }
+
     /** summary of Faculty member*/
     @Override
     public String toString() {
@@ -111,6 +122,9 @@ public class Faculty{
                 ", PLT='" + PLT + '\'' +
                 ", planningPeriod=" + planningPeriod +
                 ", isAdmin=" + isAdmin +
+                ", reqs=" + reqs +
+                ", ID=" + ID +
+                ", timesSelected=" + timesSelected +
                 '}';
     }
 }

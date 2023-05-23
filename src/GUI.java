@@ -387,6 +387,12 @@ public class GUI extends JFrame{
                 WarningPopup saved = new WarningPopup("Changes saved!");
             }
         });
+        generateScheduleButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
     }
 
     private void initTables() throws SQLException{
