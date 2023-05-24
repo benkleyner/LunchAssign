@@ -1,11 +1,9 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.DefaultTextUI;
 import java.awt.event.*;
 import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.*;
 
 public class GUI extends JFrame{
@@ -28,7 +26,7 @@ public class GUI extends JFrame{
     private JTable timeSlotTable;
     private JScrollPane timeSlotTablePane;
     private JButton removeTimeSlotButton;
-    private JTable table1;
+    private JTable scheduleTable;
     private JButton generateScheduleButton;
     private JTable tagList;
     private JButton addTagButton;
@@ -390,7 +388,28 @@ public class GUI extends JFrame{
         generateScheduleButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                TimeSlot[] timeSlotArray = new TimeSlot[timeSlots.size()];
+                for(int i = 0; i < timeSlots.size(); i++){
+                    timeSlotArray[i] = timeSlots.get(i);
+                }
 
+
+                String[] slots = new String[timeSlots.size()];
+                for(int i = 0; i < timeSlots.size(); i++){
+                    slots[i] = timeSlots.get(i).getStartTime() + "-" + timeSlots.get(i).getEndTime();
+                }
+                Schedule schedule = new Schedule(timeSlotArray,teacherNames, locations, tags);
+                scheduleTable.setModel(new DefaultTableModel(schedule.getPairings(), slots));
+                DefaultTableModel scheduleTableModel = (DefaultTableModel) scheduleTable.getModel();
+
+                String[] locationNameArray = new String[locations.size()];
+                for(int i = 0; i < locations.size(); i++){
+                    locationNameArray[i] = locations.get(i).getName();
+                }
+
+                scheduleTableModel.addColumn("Location", locationNameArray);
+                scheduleTable.setModel(scheduleTableModel);
+                scheduleTable.moveColumn(scheduleTable.getColumnCount() - 1, 0);
             }
         });
     }
