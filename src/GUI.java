@@ -1,5 +1,7 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
+import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 import java.sql.*;
@@ -50,7 +52,7 @@ public class GUI extends JFrame{
     public GUI() throws IOException, SQLException {
         setContentPane(mainPanel);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setSize(640, 480);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         initTables();
         setVisible(true);
         Statement stmt = Main.getConn().createStatement();
@@ -390,7 +392,7 @@ public class GUI extends JFrame{
                 Schedule newSchedule = new Schedule(timeSlots, teacherNames, locations, tags);
                 String[] timeSlotArray = new String[timeSlots.size()];
                 for(int i = 0; i < timeSlots.size(); i++){
-                    timeSlotArray[i] = timeSlots.get(i).getDay() + " : " + timeSlots.get(i).getStartTime() + "-" + timeSlots.get(i).getEndTime();
+                    timeSlotArray[i] = "<html><body>" + timeSlots.get(i).getDay() + "<br>" + timeSlots.get(i).getStartTime() + "-" + timeSlots.get(i).getEndTime() + "</body></html>";
                 }
 
                 String[] locationNames = new String[locations.size()];
@@ -408,6 +410,13 @@ public class GUI extends JFrame{
                 DefaultTableModel scheduleTableModel = new DefaultTableModel(newSchedule.getPairings(), timeSlotArray);
                 scheduleTableModel.addColumn("Location", locationNames);
                 scheduleTable.setModel(scheduleTableModel);
+                scheduleTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+                scheduleTable.getTableHeader().setPreferredSize(new Dimension(100, 50));
+                for(int i = 0; i < scheduleTable.getColumnCount(); i++){
+                    TableColumn tableColumn = scheduleTable.getColumnModel().getColumn(i);
+                    tableColumn.setCellRenderer(new RowColorRenderer(Color.GREEN, Color.black));
+                }
+
                 scheduleTable.moveColumn(scheduleTable.getColumnCount() - 1, 0);
 
 
