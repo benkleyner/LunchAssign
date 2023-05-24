@@ -2,9 +2,9 @@ import java.util.*;
 
 public class Schedule {
 
-    private String[][] pairings;
+    private final String[][] pairings;
 
-    private PLTMeetingSchedule meetingSchedule;
+    private final PLTMeetingSchedule meetingSchedule;
 
     public Schedule(ArrayList<TimeSlot> timeSlots, ArrayList<Faculty> teachers, ArrayList<Location> locations, ArrayList<Tag> tags){
         this.meetingSchedule = new PLTMeetingSchedule(teachers, timeSlots);
@@ -14,8 +14,9 @@ public class Schedule {
     private String[][] createMatrix(ArrayList<Faculty> teachers, ArrayList<Location> locations, ArrayList<Tag> tags){
         String[][] matrix = new String[locations.size()][meetingSchedule.getMeetingSchedule().size()];
         ArrayList<SchedulableFaculty> schedulableFaculty = createSchedulableFaculty(teachers);
+        ArrayList<TimeSlot> timeSlots = new ArrayList<>(meetingSchedule.getMeetingSchedule().keySet());
         for(int i = 0; i < meetingSchedule.getMeetingSchedule().size(); i++){
-            setEligibility(schedulableFaculty, i);
+            setEligibility(schedulableFaculty, timeSlots.get(i));
             for(int j = 0; j < locations.size(); j++){
                 int maxMatchScore = 0;
                 boolean firstPass = true;
@@ -39,21 +40,16 @@ public class Schedule {
                 matrix[j][i] = teacherSelectedName;
                 schedulableFaculty.get(selectedIndex).increaseAssignmentCount();
                 schedulableFaculty.get(selectedIndex).setEligible(false);
+                schedulableFaculty.get(selectedIndex).setLastDaySelected(timeSlots.get(i).getDay());
             }
         }
         return matrix;
     }
 
-    private void setEligibility(ArrayList<SchedulableFaculty> schedulableFaculty, int index) {
-        ArrayList<TimeSlot> slots = new ArrayList<>(meetingSchedule.getMeetingSchedule().keySet());
-        String currSelectedPLT = meetingSchedule.getMeetingSchedule().get(slots.get(index));
+    private void setEligibility(ArrayList<SchedulableFaculty> schedulableFaculty, TimeSlot slot) {
+        String currSelectedPLT = meetingSchedule.getMeetingSchedule().get(slot);
         for(SchedulableFaculty s : schedulableFaculty){
-            if(s.getPLT().equals(currSelectedPLT) || s.getCountAssignments() >= 2){
-                s.setEligible(false);
-            }
-            else{
-                s.setEligible(true);
-            }
+            s.setEligible(!s.getPLT().equals(currSelectedPLT) && s.getCountAssignments() < 2 && !s.getLastDaySelected().equals(slot.getDay()));
         }
     }
 

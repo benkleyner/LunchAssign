@@ -7,8 +7,8 @@ public class PLTMeetingSchedule {
         meetingSchedule = createMeetingSchedule(teachers, timeSlots);
     }
 
-    private HashMap<TimeSlot, String> createMeetingSchedule(ArrayList<Faculty> teachers, ArrayList<TimeSlot> timeSlots) {
-        HashMap<TimeSlot, String> meetingSchedule = new HashMap<>();
+    private LinkedHashMap<TimeSlot, String> createMeetingSchedule(ArrayList<Faculty> teachers, ArrayList<TimeSlot> timeSlots) {
+        LinkedHashMap<TimeSlot, String> meetingSchedule = new LinkedHashMap<>();
         setNumOnDay(timeSlots);
         LinkedHashMap<String, Integer> scoredSlots = computeSlotNoByPlanningPeriod(teachers);
         ArrayList<String> PLTs = new ArrayList<>(scoredSlots.keySet());

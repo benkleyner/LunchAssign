@@ -3,11 +3,13 @@ public class SchedulableFaculty extends Faculty{
     private int countAssignments;
 
     private boolean eligible;
+    private String lastDaySelected;
 
     public SchedulableFaculty(Faculty teacher){
         super(teacher.getName(), teacher.getPLT(), teacher.getPlanningPeriod(), teacher.isAdmin(), teacher.getReqs(), teacher.getID());
         this.countAssignments = 0;
         this.eligible = true;
+        this.lastDaySelected = "";
     }
 
     public int getCountAssignments() {
@@ -16,6 +18,10 @@ public class SchedulableFaculty extends Faculty{
 
     public boolean isEligible() {
         return eligible;
+    }
+
+    public String getLastDaySelected() {
+        return lastDaySelected;
     }
 
     public void setCountAssignments(int countAssignments) {
@@ -28,6 +34,10 @@ public class SchedulableFaculty extends Faculty{
 
     public void increaseAssignmentCount(){
         this.countAssignments++;
+    }
+
+    public void setLastDaySelected(String lastDaySelected) {
+        this.lastDaySelected = lastDaySelected;
     }
 
     @Override
