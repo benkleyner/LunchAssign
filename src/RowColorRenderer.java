@@ -3,18 +3,17 @@ import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 
 public class RowColorRenderer extends DefaultTableCellRenderer {
-    Color backgroundColor, foregroundColor;
-    public RowColorRenderer(Color backgroundColor, Color foregroundColor) {
+
+    public RowColorRenderer() {
         super();
-        this.backgroundColor = backgroundColor;
-        this.foregroundColor = foregroundColor;
+
     }
+
+    @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-        Component cell = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-        if(row == 0){
-            cell.setBackground(backgroundColor);
-            cell.setForeground(foregroundColor);
-        }
-        return cell;
+        ScheduleTabelModel model = (ScheduleTabelModel) table.getModel();
+        Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row ,column);
+        c.setBackground(model.getRowColor(row));
+        return c;
     }
 }

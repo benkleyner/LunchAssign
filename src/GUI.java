@@ -1,8 +1,8 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.print.PrinterException;
 import java.io.IOException;
 import java.sql.*;
 import java.util.*;
@@ -39,6 +39,7 @@ public class GUI extends JFrame{
     private JButton editTeacherButton;
     private JButton editTimeSlotButton;
     private JButton editTagButton;
+    private JButton printButton;
 
 
     private ArrayList<Faculty> teacherNames = LoadData.loadTeacherNames();
@@ -405,22 +406,35 @@ public class GUI extends JFrame{
                 for(int i = 0; i < PLTs.size(); i++){
                     PLTArray[i] = PLTs.get(i);
                 }
+                PLTArray[PLTArray.length - 1] = "PLT";
 
+                ArrayList<Color> colors = new ArrayList<Color>();
+                ScheduleTabelModel scheduleTableModel = new ScheduleTabelModel(newSchedule.getPairings(), timeSlotArray);
+                scheduleTableModel.setRowColor(0, Color.GREEN);
 
-                DefaultTableModel scheduleTableModel = new DefaultTableModel(newSchedule.getPairings(), timeSlotArray);
+                scheduleTable.setDefaultRenderer(Object.class, new RowColorRenderer());
+
                 scheduleTableModel.addColumn("Location", locationNames);
                 scheduleTable.setModel(scheduleTableModel);
                 scheduleTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
                 scheduleTable.getTableHeader().setPreferredSize(new Dimension(100, 50));
-                for(int i = 0; i < scheduleTable.getColumnCount(); i++){
-                    TableColumn tableColumn = scheduleTable.getColumnModel().getColumn(i);
-                    tableColumn.setCellRenderer(new RowColorRenderer(Color.GREEN, Color.black));
-                }
-
                 scheduleTable.moveColumn(scheduleTable.getColumnCount() - 1, 0);
-
-
                 scheduleTableModel.insertRow(0, PLTArray);
+
+                scheduleTable.setFont(new Font("Roboto", Font.BOLD, 15));
+                scheduleTable.setRowHeight(30);
+                scheduleTable.getTableHeader().setBackground(Color.YELLOW);
+
+            }
+        });
+        printButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                try {
+                    scheduleTable.print();
+                } catch (PrinterException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
     }
@@ -447,6 +461,8 @@ public class GUI extends JFrame{
             }
         }
         teacherTable.setModel(new CustomTableModel(teacherData, teacherColumnNames));
+        teacherTable.setFont(new Font("Roboto", Font.BOLD, 15));
+        teacherTable.setRowHeight(30);
 
         ResultSet result1 = stmt.executeQuery("SELECT * FROM Locations");
         ResultSetMetaData rsmd1 = result1.getMetaData();
@@ -465,6 +481,8 @@ public class GUI extends JFrame{
             }
         }
         locationTable.setModel(new CustomTableModel(locationData, locationColumnNames));
+        locationTable.setFont(new Font("Roboto", Font.BOLD, 15));
+        locationTable.setRowHeight(30);
 
         updateTimeSlotTable();
 
@@ -476,6 +494,8 @@ public class GUI extends JFrame{
             i++;
         }
         tagList.setModel(new DefaultTableModel(tagData, new Object[]{"Tag", "Weight"}));
+        tagList.setFont(new Font("Roboto", Font.BOLD, 15));
+        tagList.setRowHeight(30);
     }
 
     private void updateTimeSlotTable() {
@@ -487,6 +507,8 @@ public class GUI extends JFrame{
             timeSlotTableModel.addRow(new String[]{timeSlot.getDay(), timeSlot.getStartTime(), timeSlot.getEndTime()});
         }
         timeSlotTable.setModel(timeSlotTableModel);
+        timeSlotTable.setFont(new Font("Roboto", Font.BOLD, 15));
+        timeSlotTable.setRowHeight(30);
     }
 
     private void updateSQL() throws SQLException{
