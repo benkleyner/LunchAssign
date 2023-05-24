@@ -5,11 +5,14 @@ public class TimeSlot {
 
     private int ID;
 
+    private int numOnDay;
+
     public TimeSlot(String startTime, String endTime, String day, int id){
         this.startTime = startTime;
         this.endTime = endTime;
         this.day = day;
         this.ID = id;
+        this.numOnDay = 0;
     }
 
     public String getStartTime() {
@@ -28,6 +31,10 @@ public class TimeSlot {
         return ID;
     }
 
+    public int getNumOnDay() {
+        return numOnDay;
+    }
+
     public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
@@ -44,12 +51,18 @@ public class TimeSlot {
         this.ID = ID;
     }
 
+    public void setNumOnDay(int numOnDay) {
+        this.numOnDay = numOnDay;
+    }
+
     @Override
     public String toString() {
         return "TimeSlot{" +
                 "startTime='" + startTime + '\'' +
                 ", endTime='" + endTime + '\'' +
                 ", day='" + day + '\'' +
+                ", ID=" + ID +
+                ", numOnDay=" + numOnDay +
                 '}';
     }
 }

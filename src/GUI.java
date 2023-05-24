@@ -1,6 +1,5 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.text.DefaultTextUI;
 import java.awt.event.*;
 import java.io.IOException;
 import java.sql.*;
@@ -388,28 +387,31 @@ public class GUI extends JFrame{
         generateScheduleButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                TimeSlot[] timeSlotArray = new TimeSlot[timeSlots.size()];
+                Schedule newSchedule = new Schedule(timeSlots, teacherNames, locations, tags);
+                String[] timeSlotArray = new String[timeSlots.size()];
                 for(int i = 0; i < timeSlots.size(); i++){
-                    timeSlotArray[i] = timeSlots.get(i);
+                    timeSlotArray[i] = timeSlots.get(i).getDay() + " : " + timeSlots.get(i).getStartTime() + "-" + timeSlots.get(i).getEndTime();
                 }
 
-
-                String[] slots = new String[timeSlots.size()];
-                for(int i = 0; i < timeSlots.size(); i++){
-                    slots[i] = timeSlots.get(i).getStartTime() + "-" + timeSlots.get(i).getEndTime();
-                }
-                Schedule schedule = new Schedule(timeSlotArray,teacherNames, locations, tags);
-                scheduleTable.setModel(new DefaultTableModel(schedule.getPairings(), slots));
-                DefaultTableModel scheduleTableModel = (DefaultTableModel) scheduleTable.getModel();
-
-                String[] locationNameArray = new String[locations.size()];
+                String[] locationNames = new String[locations.size()];
                 for(int i = 0; i < locations.size(); i++){
-                    locationNameArray[i] = locations.get(i).getName();
+                    locationNames[i] = locations.get(i).getName();
                 }
 
-                scheduleTableModel.addColumn("Location", locationNameArray);
+                ArrayList<String> PLTs = new ArrayList<>(newSchedule.getMeetingSchedule().getMeetingSchedule().values());
+                String[] PLTArray = new String[PLTs.size() + 1];
+                for(int i = 0; i < PLTs.size(); i++){
+                    PLTArray[i] = PLTs.get(i);
+                }
+
+
+                DefaultTableModel scheduleTableModel = new DefaultTableModel(newSchedule.getPairings(), timeSlotArray);
+                scheduleTableModel.addColumn("Location", locationNames);
                 scheduleTable.setModel(scheduleTableModel);
                 scheduleTable.moveColumn(scheduleTable.getColumnCount() - 1, 0);
+
+
+                scheduleTableModel.insertRow(0, PLTArray);
             }
         });
     }
