@@ -54,6 +54,8 @@ public class GUI extends JFrame{
         setContentPane(mainPanel);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setIconImage(new ImageIcon("C:\\Users\\Benjamin\\IdeaProjects\\LunchAssign\\src\\data\\72de608b-d5df-47d7-bbb7-774cfe19db96.png").getImage());
+        setTitle("Lunch Assign");
         initTables();
         setVisible(true);
         Statement stmt = Main.getConn().createStatement();
