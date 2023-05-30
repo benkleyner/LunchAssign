@@ -26,7 +26,7 @@ public class AddTagPopup extends JFrame{
                     WarningPopup noNameSelected = new WarningPopup("Please enter a name!");
                 }
                 else{
-                    tagName = tagNameField.getText();
+                    tagName = tagNameField.getText().replace(" ", "");
                     weight = (int) tagWeightSelect.getValue();
                     dispose();
                 }
@@ -74,7 +74,7 @@ public class AddTagPopup extends JFrame{
                     WarningPopup noNameSelected = new WarningPopup("Please enter a name!");
                 }
                 else{
-                    tagName = tagNameField.getText();
+                    tagName = tagNameField.getText().replace(" ", "");
                     weight = (int) tagWeightSelect.getValue();
                     dispose();
                 }
