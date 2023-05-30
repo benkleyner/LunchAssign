@@ -25,7 +25,7 @@ public class Main {
     public static void connect() {
         try {
             // db parameters
-            String url = "jdbc:sqlite:C:\\Users\\Benjamin\\IdeaProjects\\LunchAssign\\src\\data\\LunchDuty";
+            String url = "jdbc:sqlite::resource:data/LunchDuty";
             // create a connection to the database
             conn = DriverManager.getConnection(url);
 
