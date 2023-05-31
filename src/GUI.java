@@ -1,8 +1,13 @@
+import org.apache.commons.io.FilenameUtils;
+
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.print.PrinterException;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.*;
 import java.util.*;
@@ -40,6 +45,7 @@ public class GUI extends JFrame{
     private JButton editTimeSlotButton;
     private JButton editTagButton;
     private JButton printButton;
+    private JButton addTeachersByCsvButton;
 
 
     private ArrayList<Faculty> teacherNames = LoadData.loadTeacherNames();
@@ -437,6 +443,40 @@ public class GUI extends JFrame{
                 } catch (PrinterException e) {
                     throw new RuntimeException(e);
                 }
+            }
+        });
+        addTeachersByCsvButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileSelect = new JFileChooser();
+                fileSelect.setFileFilter(new FileNameExtensionFilter(".csv", "csv"));
+                JFrame fileSelectFrame = new JFrame();
+                fileSelectFrame.setIconImage(new ImageIcon(getClass().getResource("data/72de608b-d5df-47d7-bbb7-774cfe19db96.png")).getImage());
+                int result = fileSelect.showOpenDialog(fileSelectFrame);
+                if(result == JFileChooser.APPROVE_OPTION){
+                    File file = fileSelect.getSelectedFile();
+                    String extension = FilenameUtils.getExtension(file.getName());
+                    if(!extension.equals("csv")){
+                        WarningPopup warningPopup = new WarningPopup("Invalid file type! Please try again.");
+                    }
+                    else{
+                        try {
+                            LoadData.loadTeachersFromCSV(file);
+                        } catch (SQLException ex) {
+                            throw new RuntimeException(ex);
+                        } catch (FileNotFoundException ex) {
+                            throw new RuntimeException(ex);
+                        }
+
+                        try {
+                            updateSQL();
+                            initTables();
+                        } catch (SQLException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }
+                }
+
             }
         });
     }

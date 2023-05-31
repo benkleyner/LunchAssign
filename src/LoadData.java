@@ -1,9 +1,12 @@
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Scanner;
 
 public class LoadData {
     public static ArrayList<Faculty> loadTeacherNames() throws SQLException{
@@ -74,5 +77,19 @@ public class LoadData {
             tags.add(tag);
         }
         return tags;
+    }
+
+    public static void loadTeachersFromCSV(File file) throws SQLException, FileNotFoundException {
+        Scanner s = new Scanner(file);
+        Statement stmt = Main.getConn().createStatement();
+        while(s.hasNextLine()){
+            String[] vals = s.nextLine().split(",");
+            if(!vals[0].equals("Name")){
+                String name = vals[0];
+                int planningPeriod = Integer.parseInt(vals[1]);
+                String PLT = vals[2];
+                stmt.executeUpdate("INSERT INTO Teachers(TeacherName, PlanningPeriod, PLT) VALUES (\"" + name + "\", " + planningPeriod + ", \"" + PLT + "\");");
+            }
+        }
     }
 }
