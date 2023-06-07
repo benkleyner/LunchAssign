@@ -81,15 +81,29 @@ public class LoadData {
 
     public static void loadTeachersFromCSV(File file) throws SQLException, FileNotFoundException {
         Scanner s = new Scanner(file);
+        s.useDelimiter(",");
         Statement stmt = Main.getConn().createStatement();
         while(s.hasNextLine()){
             String[] vals = s.nextLine().split(",");
-            if(!vals[0].equals("Name")){
-                String name = vals[0];
-                int planningPeriod = Integer.parseInt(vals[1]);
-                String PLT = vals[2];
-                stmt.executeUpdate("INSERT INTO Teachers(TeacherName, PlanningPeriod, PLT) VALUES (\"" + name + "\", " + planningPeriod + ", \"" + PLT + "\");");
+            if(vals.length > 3){
+                String rebuild = vals[0] + ", " + vals[1];
+                vals = new String[]{rebuild.replace("\"", ""), vals[2], vals[3]};
+                for(String val : vals){
+                    System.out.print(val + " ");
+                }
             }
+            try{
+                if(!vals[1].equals("Planning")){
+                    String name = vals[0];
+                    int planningPeriod = Integer.parseInt(vals[1]);
+                    String PLT = vals[2];
+                    stmt.executeUpdate("INSERT INTO Teachers(TeacherName, PlanningPeriod, PLT) VALUES (\"" + name + "\", " + planningPeriod + ", \"" + PLT + "\");");
+                }
+            }
+            catch(NumberFormatException ex){
+                WarningPopup warningPopup = new WarningPopup("Error reading CSV!");
+            }
+
         }
     }
 }
