@@ -36,41 +36,53 @@ public class PLTMeetingSchedule {
 
         }
 
-        normalizeAroundMiddle(result);
+        result = normalizeAroundMiddle(result);
         return result;
     }
 
-    private void normalizeAroundMiddle(LinkedHashMap<String, Integer> result) {
+    private LinkedHashMap<String, Integer> normalizeAroundMiddle(LinkedHashMap<String, Integer> result) {
         int middleIndex = result.size() / 2;
         List<Map.Entry<String, Integer>> entryList = new LinkedList<Map.Entry<String, Integer>>(result.entrySet());
-        List<String> keySet = new ArrayList<>(result.keySet());
+
         Collections.sort(entryList, new Comparator<Map.Entry<String, Integer>>() {
             @Override
             public int compare(Map.Entry<String, Integer> stringIntegerEntry, Map.Entry<String, Integer> t1) {
                 return(stringIntegerEntry.getValue().compareTo(t1.getValue()));
             }
         });
-        for(int i = 0; i < keySet.size(); i++){
-            if(i < middleIndex){
-                result.put(keySet.get(i), 1);
-            }
-            else{
-                result.put(keySet.get(i), 2);
-            }
+
+        System.out.println(entryList);
+
+        LinkedHashMap<String, Integer> toReturn = new LinkedHashMap<>();
+        for(Map.Entry<String, Integer> stringIntegerEntry: entryList){
+            toReturn.put(stringIntegerEntry.getKey(), stringIntegerEntry.getValue());
         }
+        List<String> keySet = new ArrayList<>();
+        for(Map.Entry<String, Integer> stringIntegerEntry: entryList){
+            keySet.add(stringIntegerEntry.getKey());
+        }
+        for(int i = 0; i < middleIndex; i++){
+            toReturn.put(keySet.get(i), 1);
+        }
+        for(int i = keySet.size() - 1; i >= middleIndex; i--){
+            toReturn.put(keySet.get(i), 2);
+        }
+
+        return toReturn;
 
     }
 
     private Integer pltScore(Faculty f) {
         int s = 0;
-        switch (f.getPlanningPeriod()){
-            case 2:
-                s = 1;
-            case 3:
-                s = 5;
-            default:
-                s = 0;
-
+        int pp = f.getPlanningPeriod();
+        if(pp == 1){
+            s = 1;
+        } else if (pp == 2) {
+            s = 2;
+        } else if(pp == 3){
+            s = 3;
+        } else{
+            s = 1;
         }
         return s;
     }

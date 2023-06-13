@@ -83,14 +83,12 @@ public class LoadData {
         Scanner s = new Scanner(file);
         s.useDelimiter(",");
         Statement stmt = Main.getConn().createStatement();
+        stmt.executeUpdate("DELETE FROM Teachers");
         while(s.hasNextLine()){
             String[] vals = s.nextLine().split(",");
             if(vals.length > 3){
                 String rebuild = vals[0] + ", " + vals[1];
                 vals = new String[]{rebuild.replace("\"", ""), vals[2], vals[3]};
-                for(String val : vals){
-                    System.out.print(val + " ");
-                }
             }
             try{
                 if(!vals[1].equals("Planning")){

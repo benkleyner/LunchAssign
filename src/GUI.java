@@ -433,6 +433,7 @@ public class GUI extends JFrame{
                 scheduleTable.setRowHeight(30);
                 scheduleTable.getTableHeader().setBackground(Color.YELLOW);
 
+
             }
         });
         printButton.addActionListener(new ActionListener() {
