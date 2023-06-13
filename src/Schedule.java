@@ -43,12 +43,16 @@ public class Schedule {
                 schedulableFaculty.get(selectedIndex).setLastDaySelected(timeSlots.get(i).getDay());
             }
         }
+        for(SchedulableFaculty sf : schedulableFaculty){
+            System.out.println(sf.getName() + " Times selected: " + sf.getCountAssignments());
+        }
         return matrix;
     }
 
     private void setEligibility(ArrayList<SchedulableFaculty> schedulableFaculty, TimeSlot slot) {
         String currSelectedPLT = meetingSchedule.getMeetingSchedule().get(slot);
-        for(SchedulableFaculty s : schedulableFaculty){
+        for(int i = 0; i < schedulableFaculty.size(); i++){
+            SchedulableFaculty s = schedulableFaculty.get(i);
             s.setEligible(!s.getPLT().equals(currSelectedPLT) && s.getCountAssignments() < 2 && !s.getLastDaySelected().equals(slot.getDay()));
         }
     }
