@@ -43,8 +43,9 @@ public class Schedule {
                 schedulableFaculty.get(selectedIndex).setLastDaySelected(timeSlots.get(i).getDay());
             }
         }
+
         for(SchedulableFaculty sf : schedulableFaculty){
-            System.out.println(sf.getName() + " Times selected: " + sf.getCountAssignments());
+            System.out.println(sf.getName() + " " + sf.hadMeeting());
         }
         return matrix;
     }
@@ -54,6 +55,9 @@ public class Schedule {
         for(int i = 0; i < schedulableFaculty.size(); i++){
             SchedulableFaculty s = schedulableFaculty.get(i);
             s.setEligible(!s.getPLT().equals(currSelectedPLT) && s.getCountAssignments() < 2 && !s.getLastDaySelected().equals(slot.getDay()));
+            if(s.getPLT().equals(currSelectedPLT)){
+                s.setHasHadMeeting(true);
+            }
         }
     }
 
@@ -66,7 +70,7 @@ public class Schedule {
     }
 
 
-    private int matchScore(Faculty faculty, Location location, ArrayList<Tag> tags) {
+    private int matchScore(SchedulableFaculty faculty, Location location, ArrayList<Tag> tags) {
         int score = 0;
         for(Tag tag : tags){
             if(Objects.equals(location.getReqs().get(tag.getName()), faculty.getReqs().get(tag.getName()))){
@@ -76,6 +80,8 @@ public class Schedule {
                 score -= tag.getWeight();
             }
         }
+
+        score += (faculty.hadMeeting() ? -1 : 1);
         return score;
     }
 
