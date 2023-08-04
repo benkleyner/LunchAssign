@@ -43,10 +43,6 @@ public class Schedule {
                 schedulableFaculty.get(selectedIndex).setLastDaySelected(timeSlots.get(i).getDay());
             }
         }
-
-        for(SchedulableFaculty sf : schedulableFaculty){
-            System.out.println(sf.getName() + " " + sf.hadMeeting());
-        }
         return matrix;
     }
 
@@ -54,11 +50,22 @@ public class Schedule {
         String currSelectedPLT = meetingSchedule.getMeetingSchedule().get(slot);
         for(int i = 0; i < schedulableFaculty.size(); i++){
             SchedulableFaculty s = schedulableFaculty.get(i);
-            s.setEligible(!s.getPLT().equals(currSelectedPLT) && s.getCountAssignments() < 2 && !s.getLastDaySelected().equals(slot.getDay()));
+            s.setEligible(!getPLTsByDay(slot).contains(s.getPLT()) && s.getCountAssignments() < 2 && !s.getLastDaySelected().equals(slot.getDay()));
             if(s.getPLT().equals(currSelectedPLT)){
                 s.setHasHadMeeting(true);
             }
         }
+    }
+
+    private ArrayList<String> getPLTsByDay(TimeSlot slot){
+        ArrayList<String> PLTs = new ArrayList<>();
+        String day = slot.getDay();
+        for(Map.Entry<TimeSlot, String> entry : meetingSchedule.getMeetingSchedule().entrySet()){
+            if(day.equals(entry.getKey().getDay())){
+                PLTs.add(entry.getValue());
+            }
+        }
+        return PLTs;
     }
 
     private ArrayList<SchedulableFaculty> createSchedulableFaculty(ArrayList<Faculty> teachers){
